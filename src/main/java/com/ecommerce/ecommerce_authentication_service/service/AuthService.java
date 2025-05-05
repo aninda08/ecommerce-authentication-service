@@ -11,16 +11,27 @@ import com.ecommerce.ecommerce_authentication_service.repository.UserInfoReposit
 import com.ecommerce.ecommerce_authentication_service.response.SuccessResponse;
 
 @Service
-public class UserInfoService {
+public class AuthService {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtService jwtService;
+
     public ResponseEntity<SuccessResponse> register(UserInfo userInfo) {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         userInfoRepository.save(userInfo);
         return new ResponseEntity<>(new SuccessResponse("New User registered successfully", "success"), HttpStatus.OK);
+    }
+
+    public String generateToken(String username) {
+        return jwtService.generateToken(username);
+    }
+
+    public boolean validateToken(String username) {
+        return jwtService.validateToken(username);
     }
 }
